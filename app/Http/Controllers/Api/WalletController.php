@@ -88,6 +88,9 @@ class WalletController extends Controller
         try {
             $minor = $this->service->toMinorUnits($amount);
             $resp = $this->service->deposit((int)$id, $minor, $idemp, $metadata);
+            if (isset($resp['idempotent_reuse']) && $resp['idempotent_reuse'] === true) {
+                return response()->json($resp, 200);
+            }
             return response()->json($resp, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -104,7 +107,11 @@ class WalletController extends Controller
         try {
             $minor = $this->service->toMinorUnits($amount);
             $resp = $this->service->withdraw((int)$id, $minor, $idemp, $metadata);
+            if (isset($resp['idempotent_reuse']) && $resp['idempotent_reuse'] === true) {
+                return response()->json($resp, 200);
+            }
             return response()->json($resp, 200);
+
         } catch (\Exception $e) {
             // differentiate insufficient funds (409)
             $msg = $e->getMessage();

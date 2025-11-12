@@ -26,6 +26,9 @@ class TransferController extends Controller
         try {
             $minor = $this->service->toMinorUnits($amount);
             $resp = $this->service->transfer($source, $target, $minor, $idemp, $metadata);
+            if (isset($resp['idempotent_reuse']) && $resp['idempotent_reuse'] === true) {
+                return response()->json($resp, 200);
+            }
             return response()->json($resp, 200);
         } catch (\Exception $e) {
             $msg = $e->getMessage();

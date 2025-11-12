@@ -32,7 +32,7 @@ class WalletService
         $minor = (int) round(floatval($amount) * $mult);
         return $minor;
     }
-    
+
     public function fromMinorUnits(int $amountMinor): string
     {
         $divisor = pow(10, $this->precision);
@@ -49,7 +49,15 @@ class WalletService
                 $existing = IdempotencyKey::where('idempotency_key', $idempotencyKey)
                     ->where('resource_type', 'deposit')
                     ->first();
-                if ($existing) return $existing->response;
+
+                if ($existing) {
+                    return [
+                        'idempotent_reuse' => true,
+                        'status' => 'success',
+                        'message' => 'Idempotent replay – original transaction reused.',
+                        'data' => $existing->response
+                    ];
+                }
             }
 
             $wallet = Wallet::findOrFail($walletId);
@@ -105,7 +113,14 @@ class WalletService
                 $existing = IdempotencyKey::where('idempotency_key', $idempotencyKey)
                     ->where('resource_type', 'withdraw')
                     ->first();
-                if ($existing) return $existing->response;
+                if ($existing) {
+                        return [
+                            'idempotent_reuse' => true,
+                            'status' => 'success',
+                            'message' => 'Idempotent replay – original transaction reused.',
+                            'data' => $existing->response
+                        ];
+                }
             }
 
             $wallet = Wallet::findOrFail($walletId);
@@ -164,7 +179,14 @@ class WalletService
                 $existing = IdempotencyKey::where('idempotency_key', $idempotencyKey)
                     ->where('resource_type', 'transfer')
                     ->first();
-                if ($existing) return $existing->response;
+                if ($existing) {
+                    return [
+                        'idempotent_reuse' => true,
+                        'status' => 'success',
+                        'message' => 'Idempotent replay – original transfer reused.',
+                        'data' => $existing->response
+                    ];
+                }
             }
 
             $source = Wallet::findOrFail($sourceId);
