@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "WalletService",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/health", "host": ["{{baseUrl}}"], "path": ["api","health"] }
+      }
+    },
+    {
+      "name": "Create Wallet",
+      "request": {
+        "method":"POST",
+        "header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{ \"owner_name\": \"Alice\", \"currency\": \"USD\" }"},
+        "url":{"raw":"{{baseUrl}}/api/wallets","host":["{{baseUrl}}"],"path":["api","wallets"]}
+      }
+    },
+    {
+      "name": "Get Wallet",
+      "request":{"method":"GET","header":[],"url":{"raw":"{{baseUrl}}/api/wallets/:id","host":["{{baseUrl}}"],"path":["api","wallets",":id"]}}
+    },
+    {
+      "name": "Deposit",
+      "request":{
+        "method":"POST",
+        "header":[{"key":"Content-Type","value":"application/json"},{"key":"Idempotency-Key","value":"{{idemp_key}}"}],
+        "body":{"mode":"raw","raw":"{ \"amount\": \"10.50\" }"},
+        "url":{"raw":"{{baseUrl}}/api/wallets/:id/deposit","host":["{{baseUrl}}"],"path":["api","wallets",":id","deposit"]}
+      }
+    },
+    {
+      "name": "Withdraw",
+      "request":{
+        "method":"POST",
+        "header":[{"key":"Content-Type","value":"application/json"},{"key":"Idempotency-Key","value":"{{idemp_key}}"}],
+        "body":{"mode":"raw","raw":"{ \"amount\": \"5.00\" }"},
+        "url":{"raw":"{{baseUrl}}/api/wallets/:id/withdraw","host":["{{baseUrl}}"],"path":["api","wallets",":id","withdraw"]}
+      }
+    },
+    {
+      "name":"Transfer",
+      "request":{
+        "method":"POST",
+        "header":[{"key":"Content-Type","value":"application/json"},{"key":"Idempotency-Key","value":"{{idemp_key}}"}],
+        "body":{"mode":"raw","raw":"{ \"source_wallet_id\": 1, \"target_wallet_id\": 2, \"amount\": \"5.00\" }"},
+        "url":{"raw":"{{baseUrl}}/api/transfers","host":["{{baseUrl}}"],"path":["api","transfers"]}
+      }
+    },
+    {
+      "name":"Wallet Transactions",
+      "request":{"method":"GET","header":[],"url":{"raw":"{{baseUrl}}/api/wallets/:id/transactions","host":["{{baseUrl}}"],"path":["api","wallets",":id","transactions"]}}
+    },
+    {
+      "name":"Wallet Balance",
+      "request":{"method":"GET","header":[],"url":{"raw":"{{baseUrl}}/api/wallets/:id/balance","host":["{{baseUrl}}"],"path":["api","wallets",":id","balance"]}}
+    }
+  ],
+  "variable":[
+    {"key":"baseUrl","value":"http://localhost:8000"},
+    {"key":"idemp_key","value":"test-key-123"}
+  ]
+}
